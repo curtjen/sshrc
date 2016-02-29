@@ -3,18 +3,6 @@
 use strict;
 use warnings;
 
-my $config = {
-    local_locations => [
-        '~/.vimrc',         
-        '~/.vim',
-        '~/.bashrc',
-        '~/bin',
-        '~/.oh-my-zsh',
-        '~/.zshrc',
-        '~/.gitconfig',
-    ],
-};
-
 # get the full ARGV as one single string for easier regexing
 my $ssh_string = 'ssh ' . join(' ', @ARGV);
 print "\nmy ssh_string = $ssh_string\n";
@@ -24,10 +12,7 @@ my $userhost = $ARGV[-1];
 print "\nmy userhost = $userhost\n";
 
 # get list of files in one space separated string
-my $files_string = '';
-foreach my $item (@{$config->{'local_locations'}}) {
-    $files_string .= $item . ' ';
-}
+my $files_string = '~/.rcs/scripts/rcs_clone_repo.sh';
 
 # get port string if port even exists
 my $port_string;
@@ -36,5 +21,5 @@ $port_string = ($port) ? "-e 'ssh -p $port'" : "";
 print "\nport string = $port_string\n";
 
 # do the secure copy
-`rsync -rpz --delete $port_string $files_string ${userhost}:~/ &2>1`;
+`rsync -rpz --progress $port_string $files_string ${userhost}:~/ &2>1`;
 exec "ssh @ARGV";
